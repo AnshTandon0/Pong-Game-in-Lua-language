@@ -57,7 +57,10 @@ function love.load()
 	player1score = 0
 	player2score =0
 	
-	gamestate = 'start'
+	gamestate = 'serve'
+	
+	servingplayer = 1
+	winningplayer = 0
 	
 end
 --#######################################################################################################
@@ -68,15 +71,59 @@ end
 --#######################################################################################################
 --  love.update begin
 
+-- gamestate serve 
+-- reset the ball
+
+--gamestate play
 -- collision of ball with paddel
 -- collision of ball with upper and lower screen
+-- calling ball update function
+
+--victory message
 -- movement of paddel ( key declaration )
--- calling paddel update and ball update function
+-- calling paddel update function
 --#######################################################################################################
 
 function love.update(dt)
 
+--************************************
+-- gamestate serve
+
+	if gamestate =='serve' then
+	
+		ball : reset()
+		if servingplayer == 1 then
+			ball.dx = 100
+			gamestate = 'start'
+		end
+		
+		if servingplayer == 2 then
+			ball.dx = -100
+			gamestate = 'start'
+		end
+		
+	end
+	
+--***********************************
+--gamestate play
+
 	if gamestate =='play' then
+
+-- score increament player2
+
+		if  ball.x < 0  then 
+		player2score = player2score + 1
+		servingplayer = 2
+		gamestate = 'serve'
+		end
+
+-- score increament player1
+		
+		if ball.x > VIRTUAL_WIDTH then
+		player1score = player1score + 1
+		servingplayer = 1
+		gamestate = 'serve'
+		end
 
 --    collision of ball with player1 's paddel
 		
@@ -118,8 +165,26 @@ function love.update(dt)
 			ball.dy = -ball.dy
 		end
 		
-	end
+--      updating state of ball
+ 
+		ball : update ( dt )
+		
+--		victory determining
 
+		if player1score == 10 then
+			winningplayer = 1
+			servingplayer = 2
+			gamestate = 'done'
+		end
+		
+		if player2score ==10 then 
+			winningplayer = 2
+			servingplayer = 1
+			gamestate = 'done'
+		end
+		
+	end
+--**************************************
 -- movement of paddel ( key declaration )
 
  --      player1 
@@ -148,15 +213,7 @@ function love.update(dt)
 
 	end
 
-
--- updating state of ball 
-	
-	if gamestate == 'play' then
-		
-		ball : update ( dt )
-		
-	end	
-
+--************************************************
 -- updating position of paddel ( both player1 and player2 )
 
 	player1 : update ( dt )
@@ -188,9 +245,16 @@ function love.keypressed( key )
 			gamestate = 'play'
 		else
 			gamestate = 'start'
-			
 			ball : reset()
 			
+		if gamestate == 'done' then
+			
+			winningplayer = 0
+			player1score = 0
+			player2score = 0
+			gamestate = 'serve'
+			
+		end
 		end
 		
 	end
@@ -217,10 +281,18 @@ function love.draw()
 		love.graphics.clear(40/255, 45/255, 52/255, 255/255)
 
 
-		love.graphics.printf('Hello Pong!', 0 , 5, VIRTUAL_WIDTH , 'center')
 		love.graphics.print(tostring(player1score),VIRTUAL_WIDTH/2 - 60 , VIRTUAL_HEIGHT/2 - 60)
 		love.graphics.print(tostring(player2score),VIRTUAL_WIDTH/2 + 60 , VIRTUAL_HEIGHT/2 - 60)
-
+		
+		if gamestate == 'serve' or gamestate == 'start' then 
+			love.graphics.printf ( 'PLAYER ' .. tostring( servingplayer ) .. ' SERVE ' , 0 , 20 , VIRTUAL_WIDTH , 'center' )
+		end
+		
+		if gamestate == 'done' then 
+			love.graphics.printf ( 'PLAYER ' .. tostring( winningplayer ) .. ' WON ' , 0 , 5 , VIRTUAL_WIDTH , 'center')
+			else
+			love.graphics.printf('HELLO PONG!', 0 , 5, VIRTUAL_WIDTH , 'center')
+		end
 
 		player1 : render ()
 		player2 : render ()
