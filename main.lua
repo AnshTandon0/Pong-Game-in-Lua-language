@@ -1,4 +1,7 @@
+
+
 push = require 'push'
+
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 
@@ -6,6 +9,7 @@ VIRTUAL_WIDTH = 432
 VIRTUAL_HEIGHT = 243
 
 PADDEL_SPEED = 200
+
 
 function love.load()
 
@@ -22,15 +26,19 @@ function love.load()
 	player1Y = 30
 	player2Y = VIRTUAL_HEIGHT - 40
 	
-	ballX = VIRTUAL_WIDTH/2
-	ballY = VIRTUAL_HEIGHT/2
-
 	player1score = 0
 	player2score =0
 	
-	
+	ballX = VIRTUAL_WIDTH/2
+	ballY = VIRTUAL_HEIGHT/2
 
+	ballDX = math.random ( 1 , 2 ) == 1 and 100 or -100
+	ballDY = math.random( -50 , 50 )	
+	
+	gamestate = 'start'
+	
 end
+
 
 function love.update(dt)
 
@@ -49,6 +57,12 @@ function love.update(dt)
 		player2Y = math.min( player2Y + PADDEL_SPEED*dt , VIRTUAL_HEIGHT - 20 )
 
 	end
+	
+	if gamestate == 'play' then
+		ballX = ballX + ballDX * dt
+		ballY = ballY + ballDY * dt
+	end	
+		
 end
 
 
@@ -56,9 +70,25 @@ function love.keypressed( key )
 
 	if key == 'escape' then 
 		love.event.quit()
+		
+	elseif key == 'enter' or key == 'return' then
+	
+		if gamestate =='start' then
+			gamestate = 'play'
+		else
+			gamestate = 'start'
+			
+			ballX = VIRTUAL_WIDTH/2
+			ballY = VIRTUAL_HEIGHT/2
+			
+			ballDX = math.random ( 2 ) == 1 and 100 or -100
+			ballDY = math.random( -50 , 50 ) * 1.5	
+		end
+		
 	end
 	
 end
+
 
 function love.draw()
 
@@ -79,3 +109,4 @@ function love.draw()
 	push : apply ('end')
 
 end
+
