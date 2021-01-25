@@ -29,6 +29,7 @@ PADDEL_SPEED = 200
 -- love.load begin 
 
 -- setting the screen and declaring object for paddel and ball
+--table for sound also declared
 --#####################################################################################################
 function love.load()
 
@@ -44,7 +45,14 @@ function love.load()
 	vsync =true
 	})
 	
-	--declaring object of paddel class
+--  adding table for sounds
+
+	sounds = {
+	['paddel_hit'] = love.audio.newSource( 'sounds/paddle_hit.wav' , 'static'),
+	['score'] = love.audio.newSource( 'sounds/score.wav' , 'static'),
+	['wall_hit'] = love.audio.newSource( 'sounds/wall_hit.wav' , 'static') }
+	
+--  declaring object of paddel class
 	
 	player1 = Paddel ( 5 , 30 , 5 , 20 )
 	player2 = Paddel ( VIRTUAL_WIDTH -10 , VIRTUAL_HEIGHT - 40 , 5 , 20 )
@@ -130,6 +138,7 @@ function love.update(dt)
 -- score increament player2
 
 		if  ball.x < 0  then 
+		sounds['score'] : play()
 		player2score = player2score + 1
 		servingplayer = 2
 		gamestate = 'serve'
@@ -138,6 +147,7 @@ function love.update(dt)
 -- score increament player1
 		
 		if ball.x > VIRTUAL_WIDTH then
+		sounds['score'] : play()
 		player1score = player1score + 1
 		servingplayer = 1
 		gamestate = 'serve'
@@ -148,6 +158,7 @@ function love.update(dt)
 		if ball : collide ( player1 ) then
 			ball.dx = -ball.dx * 1.03
 			ball.x = player1.x + 5
+			sounds['paddel_hit'] : play()
 			
 			if ball.dy < 0 then
 				ball.dy = -math.random( 10 , 150 )
@@ -161,6 +172,7 @@ function love.update(dt)
 		if ball : collide ( player2 ) then 
 			ball.dx = -ball.dx * 1.03
 			ball.x = player2.x -4
+			sounds['paddel_hit'] : play()
 			
 			if ball.dy < 0 then
 				ball.dy = -math.random ( 10 , 150 )
@@ -174,6 +186,7 @@ function love.update(dt)
 		if ball.y <= 0 then
 			ball.y = 0
 			ball.dy = -ball.dy 
+			sounds['wall_hit'] : play()
 		end
 		
 -- 	  collision of ball with lower screen
@@ -181,6 +194,7 @@ function love.update(dt)
 		if ball.y >= VIRTUAL_HEIGHT - 4 then 
 			ball.y = VIRTUAL_HEIGHT - 4
 			ball.dy = -ball.dy
+			sounds['wall_hit'] : play()
 		end
 		
 --      updating state of ball
@@ -261,18 +275,18 @@ function love.keypressed( key )
 	
 		if gamestate =='start' then
 			gamestate = 'play'
-		else
+		elseif gamestate == 'play' then
 			gamestate = 'start'
 			ball : reset()
-			
+		end	
+		
 		if gamestate == 'done' then
 			
 			winningplayer = 0
 			player1score = 0
 			player2score = 0
-			gamestate = 'serve'
+			gamestate = 'serve'  
 			
-		end
 		end
 		
 	end
