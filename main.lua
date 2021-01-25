@@ -21,6 +21,8 @@ function love.load()
 	
 	math.randomseed(os.time())
 	
+	love.window.setTitle ( 'Pong' )
+	
 	push : setupScreen( VIRTUAL_WIDTH , VIRTUAL_HEIGHT , WINDOW_WIDTH, WINDOW_HEIGHT, {
 	fullscreen  = false,
 	resizable = false,
@@ -41,6 +43,42 @@ end
 
 
 function love.update(dt)
+
+	if gamestate =='play' then
+		
+		if ball : collide ( player1 ) then
+			ball.dx = -ball.dx * 1.03
+			ball.x = player1.x + 5
+			
+			if ball.dy < 0 then
+				ball.dy = -math.random( 10 , 150 )
+			else
+				ball.dy = math.random ( 10 , 150 )
+			end
+		end
+		
+		if ball : collide ( player2 ) then 
+			ball.dx = -ball.dx * 1.03
+			ball.x = player2.x -4
+			
+			if ball.dy < 0 then
+				ball.dy = -math.random ( 10 , 150 )
+			else
+				ball.dy = math.random ( 10 , 150 )
+			end
+		end
+		
+		if ball.y <= 0 then
+			ball.y = 0
+			ball.dy = -ball.dy 
+		end
+		
+		if ball.y >= VIRTUAL_HEIGHT - 4 then 
+			ball.y = VIRTUAL_HEIGHT - 4
+			ball.dy = -ball.dy
+		end
+		
+	end
 
 	if love.keyboard.isDown ('w') then
 		player1.dy = -PADDEL_SPEED
@@ -112,8 +150,17 @@ function love.draw()
 		player1 : render ()
 		player2 : render ()
 		ball : render ()
+		
+		displayFPS()
 
 	push : apply ('end')
 
+end
+
+function displayFPS()
+
+	love.graphics.setColor(0, 255/255, 0, 255/255)
+	love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 5 , 5 )
+	
 end
 

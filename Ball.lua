@@ -13,6 +13,20 @@ function Ball : init ( x , y , width , height )
 
 end
 
+function Ball : collide ( paddel )
+
+	if  paddel.x > self.x + self.width  or self.x > paddel.x + paddel.width then
+	    return false 
+	end
+		
+	if self.y + self.height < paddel.y or self.y > paddel.y + paddel.height then
+		return false 
+	end
+	
+	return true
+
+end
+
 function Ball : reset ()
 
 	self.x = VIRTUAL_WIDTH/2
