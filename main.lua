@@ -317,13 +317,13 @@ function love.draw()
 		love.graphics.print(tostring(player2score),VIRTUAL_WIDTH/2 + 60 , VIRTUAL_HEIGHT/2 - 60)
 		
 		if gamestate == 'serve' or gamestate == 'start' then 
-			love.graphics.printf ( 'PLAYER ' .. tostring( servingplayer ) .. ' SERVE ' , 0 , 20 , VIRTUAL_WIDTH , 'center' )
+			love.graphics.printf ( 'Player ' .. tostring( servingplayer ) .. ' Serve ' , 0 , 20 , VIRTUAL_WIDTH , 'center' )
 		end
 		
 		if gamestate == 'done' then 
-			love.graphics.printf ( 'PLAYER ' .. tostring( winningplayer ) .. ' WON ' , 0 , 5 , VIRTUAL_WIDTH , 'center')
+			love.graphics.printf ( 'Player ' .. tostring( winningplayer ) .. ' Won ' , 0 , 5 , VIRTUAL_WIDTH , 'center')
 			else
-			love.graphics.printf('HELLO PONG!', 0 , 5, VIRTUAL_WIDTH , 'center')
+			love.graphics.printf('Hello Pong!', 0 , 5, VIRTUAL_WIDTH , 'center')
 		end
 
 		player1 : render ()
